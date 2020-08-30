@@ -1,0 +1,67 @@
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+.mainContainer > div {
+    flex: 1;
+}
+
+.mainContainer > div a{
+    text-align: right;
+}
+
+.mainContainer > div span{
+    text-align: center;
+}
+
+.mainBg {
+    background-color: #d2e3ff;
+    background-image: url("./../../public/img/landing-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.mainBg img {
+    width: 900px;
+}
+
+.loginContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 200px;
+}
+.loginContainer hr {
+    margin-top: 50px;
+    margin-bottom: 40px;
+    border: 1px solid #efefef;
+}
+.loginBox {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    min-width: 500px;
+    line-height: 2;
+}
+
+.loginBox input{
+    margin-bottom: 5px;
+}
+
+.loginBox button, .registerBox button{
+    margin-top: 20px;
+}
+
+.registerBox {
+    margin-top: 50px;
+    display: none;
+    flex-direction: column;
+    min-width: 500px;
+    line-height: 2;
+}
+
+.registerBox > div {
+    margin-bottom: 5px;
+}

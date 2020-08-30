@@ -1,0 +1,3 @@
+#5172f0 - Primary
+#3150bc - Primary dark
+#faa307 - Accent collor
