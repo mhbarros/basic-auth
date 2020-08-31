@@ -1,0 +1,27 @@
+version: '3.3'
+volumes:
+  data:
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - db
+    ports:
+      - "3307:80"
+    depends_on:
+      - db
+    environment:
+      - PMA_ARBITRARY=1
+#    ports:
+#      - "3307:3307"
+#    environment:
+#      - PMA_HOST=3307

@@ -1,4 +1,5 @@
 import React, {useRef} from 'react';
+import Api from './../services/Api';
 
 import Head from './../components/Head';
 
@@ -22,11 +23,16 @@ export default function Home() {
     title.current.innerText           = 'Crie sua conta';
   }
 
+  const doRegister = async () => {
+    let data = await Api.post('/user', '');
+    console.log(data.data);
+  };
+
   return (
       <div className={styles.mainContainer}>
         <Head title={'Bem vindo(a)'} />
         <div className={styles.loginContainer}>
-          <h1 ref={title}>Olá novamente</h1>
+          <h1 ref={title} onClick={doRegister}>Olá novamente</h1>
           <section className={styles.loginBox} ref={loginBox}>
             <div>
               <label>E-mail</label>

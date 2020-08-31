@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
-import express, {Request, Response} from 'express';
+import express from 'express';
+import cors from 'cors';
+import Routes from './routes';
 
 dotenv.config();
 const app = express();
@@ -9,8 +11,8 @@ if(!process.env.PORT){
     process.exit(1);
 }
 
+app.use(cors());
 app.use(express.json());
-app.get('/', (req: Request, res: Response) => {
-    res.json({ok: true});
-});
+app.use(Routes);
+
 app.listen(process.env.PORT);
