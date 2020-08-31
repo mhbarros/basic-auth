@@ -15,6 +15,12 @@ if(!process.env.PORT){
 app.use(cors({origin: true, credentials: true}));
 app.use(express.json());
 app.use(session({secret: 'abc', saveUninitialized: true, resave: false, cookie: {maxAge: 900000}}));
+app.use((req, res, next) => {
+    if(req.session){
+        req.session.touch();
+    }
+    next();
+});
 app.use(Routes);
 
 app.listen(process.env.PORT);
