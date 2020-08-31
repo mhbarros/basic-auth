@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import session from 'express-session';
 import cors from 'cors';
 import Routes from './routes';
 
@@ -11,8 +12,9 @@ if(!process.env.PORT){
     process.exit(1);
 }
 
-app.use(cors());
+app.use(cors({origin: true, credentials: true}));
 app.use(express.json());
+app.use(session({secret: 'abc', saveUninitialized: true, resave: false, cookie: {maxAge: 900000}}));
 app.use(Routes);
 
 app.listen(process.env.PORT);
