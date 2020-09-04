@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import Api from './../services/Api';
+import Router from 'next/router';
 
 import Head from './../components/Head';
 
@@ -16,6 +17,9 @@ export default function Home() {
   const [registerEmail, setRegisterEmail]                     = useState('');
   const [registerPassword, setRegisterPassword]               = useState('');
   const [registerPasswordConfirm, setRegisterPasswordConfirm] = useState('');
+
+  const [loginEmail, setLoginEmail]       = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   const showLogin = () => {
     registerBox.current.style.display = 'none';
@@ -76,6 +80,15 @@ export default function Home() {
     console.log(response);
   };
 
+  const doLogin = async () => {
+    let response = await Api.post('/login', {email: loginEmail, password: loginPassword});
+    let data = response.data;
+
+    if(data.ok){
+      await Router.push('/dashboard')
+    }
+  }
+
   return (
       <div className={styles.mainContainer}>
         <Head title={'Bem vindo(a)'} />
@@ -84,14 +97,14 @@ export default function Home() {
           <section className={styles.loginBox} ref={loginBox}>
             <div>
               <label>E-mail</label>
-              <input className={'primary'} type={'text'} placeholder={'E-mail'}/>
+              <input className={'primary'} type={'text'} placeholder={'E-mail'} value={loginEmail} onChange={e => {setLoginEmail(e.target.value)}}/>
             </div>
             <div>
               <label>Senha</label>
-              <input className={'primary'} type={'password'} placeholder={'Senha'}/>
+              <input className={'primary'} type={'password'} placeholder={'Senha'} value={loginPassword} onChange={e => {setLoginPassword(e.target.value)}}/>
             </div>
             <a href={'#'}>Esqueceu sua senha?</a>
-            <button className={'primary'}>Entrar</button>
+            <button className={'primary'} onClick={doLogin}>Entrar</button>
             <hr/>
             <span>Não possui uma conta? <a href={'#'} onClick={showRegister}>Cadastre-se</a></span>
           </section>

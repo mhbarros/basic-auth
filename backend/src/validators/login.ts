@@ -1,0 +1,6 @@
+import {body} from 'express-validator';
+
+export const userLoginValidator = [
+    body('email').notEmpty().isString().isEmail().isLength({max: 80}),
+    body('password').notEmpty().isString()
+]

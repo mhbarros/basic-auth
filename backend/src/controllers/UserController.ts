@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {validationResult} from 'express-validator';
-import {cryptPassword} from '../helpers/crypt';
+import {hashPassword} from '../helpers/crypt';
 
 import db from '../db/db';
 
@@ -13,7 +13,7 @@ export default class UserController{
 
         let {name, username, email, password} = req.body;
 
-        password = await cryptPassword(password);
+        password = await hashPassword(password);
         if(!password){
             return res.status(400)
                 .json({ok: false, errors: [
@@ -51,6 +51,6 @@ export default class UserController{
             }
         }
 
-        return res.json({ok: true});
+        return res.redirect('/dashboard');
     }
 }

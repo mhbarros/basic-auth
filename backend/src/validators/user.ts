@@ -1,6 +1,6 @@
 import {body} from 'express-validator';
 
-export const registerUser = [
+export const registerUserValidator = [
     body('name').notEmpty().trim().isString().isLength({max: 60}),
     body('username').notEmpty().trim().isString().isLength({max: 60}),
     body('email', 'E-mail inválido').notEmpty().trim().isString().isEmail().isLength({max: 80}),
