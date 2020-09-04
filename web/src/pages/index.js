@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import Api from './../services/Api';
 
 import Head from './../components/Head';
@@ -10,6 +10,12 @@ export default function Home() {
   const loginBox    = useRef();
   const registerBox = useRef();
   const title       = useRef();
+
+  const [registerName, setRegisterName]                       = useState('');
+  const [registerUsername, setRegisterUsername]               = useState('');
+  const [registerEmail, setRegisterEmail]                     = useState('');
+  const [registerPassword, setRegisterPassword]               = useState('');
+  const [registerPasswordConfirm, setRegisterPasswordConfirm] = useState('');
 
   const showLogin = () => {
     registerBox.current.style.display = 'none';
@@ -23,9 +29,51 @@ export default function Home() {
     title.current.innerText           = 'Crie sua conta';
   }
 
+  const validateRegister = () => {
+    if(!registerName || !registerUsername || !registerEmail || !registerPassword || !registerPasswordConfirm){
+      console.error('Campo obrigatório não preenchido.');
+      return false;
+    }
+
+    if(registerPassword !== registerPasswordConfirm){
+      console.error('As senhas não coincidem;');
+      return false;
+
+    }
+
+    if(registerName.length > 60){
+      console.error('Nome grande demais.');
+      return false;
+    }
+
+    if(registerUsername.length > 60){
+      console.error('Nome de usuário grande demais.');
+      return false;
+    }
+
+    if(registerEmail.length > 80){
+      console.error('E-mail grande demais.');
+      return false;
+    }
+
+    return true;
+
+  }
+
   const doRegister = async () => {
-    let data = await Api.post('/user', '');
-    console.log(data.data);
+    let isValid = validateRegister();
+    if(!isValid) return;
+
+    let data = {
+      name: registerName,
+      username: registerUsername,
+      email: registerEmail,
+      password: registerPassword,
+      passwordConfirm: registerPasswordConfirm
+    };
+
+    let response = await Api.post('/user', data);
+    console.log(response);
   };
 
   return (
@@ -50,25 +98,28 @@ export default function Home() {
           <section className={styles.registerBox} ref={registerBox}>
             <div>
               <label>Nome</label>
-              <input className={'primary'} type={'text'} placeholder={'Seu nome'}/>
+              <input className={'primary'} type={'text'} placeholder={'Seu nome'} value={registerName}
+                     onChange={e => {setRegisterName(e.target.value)}} maxLength={60} />
             </div>
             <div>
               <label>Nome de usuário</label>
-              <input className={'primary'} type={'text'} placeholder={'@usuário'}/>
+              <input className={'primary'} type={'text'} placeholder={'@usuário'} value={registerUsername}
+                     onChange={e => {setRegisterUsername(e.target.value)}} maxLength={60}/>
             </div>
             <div>
               <label>E-mail</label>
-              <input className={'primary'} type={'text'} placeholder={'Seu melhor e-mail'}/>
+              <input className={'primary'} type={'text'} placeholder={'Seu melhor e-mail'} value={registerEmail}
+                     onChange={e => {setRegisterEmail(e.target.value)}} maxLength={80}/>
             </div>
             <div>
               <label>Senha</label>
-              <input className={'primary'} type={'password'} placeholder={'Senha'}/>
+              <input className={'primary'} type={'password'} placeholder={'Senha'} value={registerPassword} onChange={e => {setRegisterPassword(e.target.value)}}/>
             </div>
             <div>
               <label>Confirme sua senha</label>
-              <input className={'primary'} type={'password'} placeholder={'Confirme sua senha'}/>
+              <input className={'primary'} type={'password'} placeholder={'Confirme sua senha'} value={registerPasswordConfirm} onChange={e => {setRegisterPasswordConfirm(e.target.value)}}/>
             </div>
-            <button className={'primary'}>Cadastrar</button>
+            <button className={'primary'} onClick={doRegister}>Cadastrar</button>
             <hr/>
             <span>Já possui conta? <a href={'#'} onClick={showLogin}>Entrar</a></span>
           </section>

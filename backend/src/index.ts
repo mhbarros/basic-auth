@@ -16,9 +16,12 @@ app.use(cors({origin: true, credentials: true}));
 app.use(express.json());
 app.use(session({secret: 'abc', saveUninitialized: true, resave: false, cookie: {maxAge: 900000}}));
 app.use((req, res, next) => {
-    if(req.session){
-        req.session.touch();
+    if(!req.session){
+        res.status(500).json({ok: false, msg: 'Houve um erro nesta requisição. Por favor, atualize a página e tente novamente'});
+        return;
     }
+
+    req.session.touch();
     next();
 });
 app.use(Routes);
