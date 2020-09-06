@@ -15,6 +15,12 @@ export async function getServerSideProps(ctx){
   return {props:{}};
 }
 
-export default () => (
-    <h1>Dashboard do usuário logado</h1>
-)
+export default () => {
+  return (
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#cdcdcd'}}>
+        <div style={{width: '600px', height: '400px', borderRadius: '10px', background: 'white'}}>
+          <h2>Seus dados de usuário</h2>
+        </div>
+      </div>
+  )
+}
