@@ -10,6 +10,7 @@ const routes          = express.Router();
 const userController  = new UserController();
 const loginController = new LoginController();
 
+routes.get('/login', loginController.getLogin)
 routes.post('/user', registerUserValidator, userController.create)
 routes.post('/login', userLoginValidator, loginController.login);
 

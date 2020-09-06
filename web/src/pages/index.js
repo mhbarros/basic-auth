@@ -1,10 +1,29 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect, useMemo} from 'react';
 import Api from './../services/Api';
-import Router from 'next/router';
+import router from 'next/router';
+
+import Cookies from 'universal-cookie';
 
 import Head from './../components/Head';
 
 import styles from './../css/index.module.css';
+
+const cookies = new Cookies();
+// getServerSideProps
+// getStaticProps
+export async function getServerSideProps(ctx){
+  let {cookie} = ctx.req.headers;
+  if(!cookie) cookie = '';
+
+  const response = await Api.get('/login', {headers: {cookie}});
+  if(response.data.ok === true){
+    ctx.res.statusCode = 301;
+    ctx.res.setHeader('location', '/dashboard');
+    return {props: {}};
+
+  }
+  return {props:{}};
+}
 
 export default function Home() {
 
@@ -77,7 +96,6 @@ export default function Home() {
     };
 
     let response = await Api.post('/user', data);
-    console.log(response);
   };
 
   const doLogin = async () => {
@@ -85,7 +103,11 @@ export default function Home() {
     let data = response.data;
 
     if(data.ok){
-      await Router.push('/dashboard')
+      const token = data.token;
+      if(!token) return;
+
+      cookies.set('stok', token, {maxAge: 60 * 60 *3, secure: false});
+      await router.push('/dashboard');
     }
   }
 
