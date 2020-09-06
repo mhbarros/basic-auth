@@ -1,0 +1,6 @@
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    background-color: #ecf5fc;
+}

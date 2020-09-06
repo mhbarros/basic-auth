@@ -67,6 +67,6 @@ export default class LoginController{
 
         const token = initUserSession(user.id, user.name, user.username);
 
-        return res.json({ok: true, token});
+        return res.json({ok: true, token, data: user});
     }
 }

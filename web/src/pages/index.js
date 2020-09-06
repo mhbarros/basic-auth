@@ -100,11 +100,15 @@ export default function Home() {
 
   const doLogin = async () => {
     let response = await Api.post('/login', {email: loginEmail, password: loginPassword});
-    let data = response.data;
+    let responseData = response.data;
 
-    if(data.ok){
-      const token = data.token;
+    if(responseData.ok){
+      console.log(responseData);
+      const {token, data} = responseData;
       if(!token) return;
+
+      localStorage.setItem('user.name', data.name);
+      localStorage.setItem('user.username', data.username);
 
       cookies.set('stok', token, {maxAge: 60 * 60 *3, secure: false});
       await router.push('/dashboard');

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Api from "../../services/Api";
 
 export async function getServerSideProps(ctx){
@@ -15,12 +15,23 @@ export async function getServerSideProps(ctx){
   return {props:{}};
 }
 
+import styles from '../../css/dashboard.module.css';
+
 export default () => {
+
+  const [name, setName] = useState('');
+
+  const getUserInfo = () => {
+    setName(localStorage.getItem('user.name'));
+  }
+
+  useEffect(() => {
+    getUserInfo();
+  }, [])
+
   return (
-      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#cdcdcd'}}>
-        <div style={{width: '600px', height: '400px', borderRadius: '10px', background: 'white'}}>
-          <h2>Seus dados de usuário</h2>
-        </div>
+      <div className={styles.mainContainer}>
+        <h1>Olá, {name}</h1>
       </div>
   )
 }
