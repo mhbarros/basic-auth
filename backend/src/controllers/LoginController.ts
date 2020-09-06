@@ -34,7 +34,7 @@ export default class LoginController{
         return res.json({ok: true});
     }
     async login(req: Request, res: Response){
-
+        console.log(req.cookies);
 
         const validation = validationResult(req);
         if(!validation.isEmpty()){

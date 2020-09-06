@@ -16,5 +16,5 @@ export async function getServerSideProps(ctx){
 }
 
 export default () => (
-    <h1>Hello World !</h1>
+    <h1>Dashboard do usuário logado</h1>
 )
