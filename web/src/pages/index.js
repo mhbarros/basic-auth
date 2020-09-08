@@ -101,10 +101,8 @@ const Home = () =>  {
   };
 
   const doLogin = async () => {
-    let teste = await Api.get('/login');
-    console.log(teste.data);
-    // return;
     let response = await Api.post('/login', {email: loginEmail, password: loginPassword});
+    console.log(response);
     let responseData = response.data;
 
     if(responseData.ok){

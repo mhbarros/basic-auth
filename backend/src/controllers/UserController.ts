@@ -5,6 +5,9 @@ import {hashPassword} from '../helpers/crypt';
 import db from '../db/db';
 
 export default class UserController{
+    async get(req: Request, res: Response){
+        return res.json({ok: true});
+    }
     async create(req: Request, res: Response){
         const validation = validationResult(req);
         if(!validation.isEmpty()){

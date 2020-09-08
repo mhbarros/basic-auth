@@ -23,12 +23,9 @@ const Dashboard = () => {
 
   const getUserInfo = async () => {
     // setName(localStorage.getItem('user.name'));
-    let response = await Api.get('/login');
+    let response = await Api.get('/user');
+    console.log(response.data);
   }
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
 
   return (
       <div className={styles.mainContainer}>

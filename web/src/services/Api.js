@@ -11,4 +11,12 @@ const Api = axios.create({
   withCredentials: true,
 });
 
+Api.interceptors.response.use((r) => {return r}, error => {
+  if(error.response.status === 403){
+    document.location = '/';
+  }
+
+  return error;
+});
+
 export {Api};
