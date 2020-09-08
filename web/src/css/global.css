@@ -44,6 +44,10 @@ hr {
     width: 100%;
 }
 
+div {
+    box-sizing: border-box;
+}
+
 
 
 /* FIM DO RESET CSS */

@@ -20,6 +20,7 @@ interface User {
 
 export default class LoginController{
     async getLogin(req: Request, res: Response){
+        console.log(req.cookies);
         if(!req.cookies.stok){
             return res.json({ok: false});
         }
@@ -34,7 +35,6 @@ export default class LoginController{
         return res.json({ok: true});
     }
     async login(req: Request, res: Response){
-        console.log(req.cookies);
 
         const validation = validationResult(req);
         if(!validation.isEmpty()){
@@ -66,6 +66,7 @@ export default class LoginController{
         }
 
         const token = initUserSession(user.id, user.name, user.username);
+        res.cookie('stok', token, {httpOnly: true, maxAge: 1000*60*60*3, secure: false});
 
         return res.json({ok: true, token, data: user});
     }

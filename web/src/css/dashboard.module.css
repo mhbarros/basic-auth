@@ -3,4 +3,23 @@
     flex-direction: row;
     height: 100vh;
     background-color: #ecf5fc;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainContainer > div {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    height: 600px;
+    border-radius: 12px;
+    background-color: white;
+    padding: 10px;
+}
+
+.topInfo {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 10px;
+    align-items: center;
 }

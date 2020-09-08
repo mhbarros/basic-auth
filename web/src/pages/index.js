@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect, useMemo} from 'react';
-import Api from './../services/Api';
+import {Api} from '../services/Api';
 import router from 'next/router';
 
 import Cookies from 'universal-cookie';
@@ -11,8 +11,8 @@ import styles from './../css/index.module.css';
 const cookies = new Cookies();
 // getServerSideProps
 // getStaticProps
-export async function getServerSideProps(ctx){
-  let {cookie} = ctx.req.headers;
+export async function getInitialProps(ctx){
+  /*let {cookie} = ctx.req.headers;
   if(!cookie) cookie = '';
 
   const response = await Api.get('/login', {headers: {cookie}});
@@ -21,11 +21,13 @@ export async function getServerSideProps(ctx){
     ctx.res.setHeader('location', '/dashboard');
     return {props: {}};
 
-  }
+  }*/
+  console.log('asd');
+  const response = await Api.get('/login');
   return {props:{}};
 }
 
-export default function Home() {
+const Home = () =>  {
 
   const loginBox    = useRef();
   const registerBox = useRef();
@@ -99,6 +101,9 @@ export default function Home() {
   };
 
   const doLogin = async () => {
+    let teste = await Api.get('/login');
+    console.log(teste.data);
+    // return;
     let response = await Api.post('/login', {email: loginEmail, password: loginPassword});
     let responseData = response.data;
 
@@ -107,10 +112,10 @@ export default function Home() {
       const {token, data} = responseData;
       if(!token) return;
 
+
       localStorage.setItem('user.name', data.name);
       localStorage.setItem('user.username', data.username);
 
-      cookies.set('stok', token, {maxAge: 60 * 60 *3, secure: false});
       await router.push('/dashboard');
     }
   }
@@ -167,3 +172,20 @@ export default function Home() {
       </div>
   )
 }
+
+Home.getInitialProps = async (ctx) => {
+  let isAuth = false;
+  if(!ctx.req.headers.cookie){
+    return {isAuth};
+  }
+
+  const response = await Api.get('/login', {headers: {cookie: ctx.req.headers.cookie}});
+  if(response.data.ok === true){
+    ctx.res.statusCode = 301;
+    ctx.res.setHeader('location', '/dashboard');
+    isAuth = true;
+  }
+  return {isAuth};
+}
+
+export default Home;
