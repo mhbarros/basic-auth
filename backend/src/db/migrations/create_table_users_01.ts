@@ -8,6 +8,7 @@ export const up = (knex: Knex) => {
         table.string('password', 60).notNullable();
         table.string('email', 80).notNullable().unique();
         table.string('gender', 1);
+        table.string('uuid', 36).notNullable().unique();
         table.timestamps();
     });
 }
