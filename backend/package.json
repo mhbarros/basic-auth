@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "docker-compose start && ts-node-dev src/index.ts"
   },
   "dependencies": {
     "@types/cookie-parser": "^1.4.2",
