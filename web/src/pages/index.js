@@ -98,18 +98,25 @@ const Home = () =>  {
     };
 
     let response = await Api.post('/user', data);
+
+    if(response && response.data.ok){
+      const data = response.data.data;
+
+      localStorage.setItem('user.name', data.name);
+      localStorage.setItem('user.username', data.username);
+
+      await router.push('/dashboard');
+    }
   };
 
   const doLogin = async () => {
     let response = await Api.post('/login', {email: loginEmail, password: loginPassword});
-    console.log(response);
+
     let responseData = response.data;
 
-    if(responseData.ok){
-      console.log(responseData);
-      const {token, data} = responseData;
-      if(!token) return;
+    if(responseData && responseData.ok){
 
+      const {data} = responseData;
 
       localStorage.setItem('user.name', data.name);
       localStorage.setItem('user.username', data.username);

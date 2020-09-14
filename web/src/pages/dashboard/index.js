@@ -1,30 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {Api} from "../../services/Api";
 
-/*export async function getServerSideProps(ctx){
-  let {cookie} = ctx.req.headers;
-  if(!cookie) cookie = '';
-
-  const response = await Api.get('/login', {headers: {cookie}});
-  if(response.data.ok === false){
-    ctx.res.statusCode = 301;
-    ctx.res.setHeader('location', '/');
-    return {props: {}};
-
-  }
-  return {props:{}};
-}*/
-
 import styles from '../../css/dashboard.module.css';
 
 const Dashboard = () => {
 
   const [name, setName] = useState('');
 
-  const getUserInfo = async () => {
-    // setName(localStorage.getItem('user.name'));
-    let response = await Api.get('/user');
-    console.log(response.data);
+  useEffect(() => {
+    setName(localStorage.getItem('user.name'));
+  });
+
+  const teste = async () => {
+    const response = await Api.get('/user');
   }
 
   return (
@@ -54,7 +42,7 @@ const Dashboard = () => {
               <option value={'F'}>Feminino</option>
             </select>
           </div>
-          <button className={'primary'} onClick={getUserInfo}>Salvar</button>
+          <button className={'primary'} onClick={teste}>Salvar</button>
         </div>
       </div>
   )

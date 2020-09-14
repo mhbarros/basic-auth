@@ -1,13 +1,11 @@
 import {Request, Response} from "express";
 import {validationResult} from 'express-validator';
-
-import jwt from 'jsonwebtoken';
+import {v4 as uuid} from 'uuid';
 
 import db from '../db/db';
 
 import {checkPassword} from '../helpers/crypt';
 import {initUserSession, validateUserSession} from '../helpers/auth';
-import validate = WebAssembly.validate;
 
 interface User {
     id: number,
@@ -15,12 +13,12 @@ interface User {
     username: string,
     password?: string,
     email: string,
-    gender: string
+    gender: string,
+    uuid: string
 }
 
 export default class LoginController{
     async getLogin(req: Request, res: Response){
-        console.log(req.cookies);
         if(!req.cookies.stok){
             return res.json({ok: false});
         }
@@ -60,14 +58,17 @@ export default class LoginController{
 
         delete user.password;
 
-        const jwtSecret = process.env.JWT_SECRET;
-        if(!jwtSecret){
-            return res.status(500).json({ok: false, errors: [{message: 'Ocorreu um erro ao concluir o login.'}]});
-        }
+        const accessToken  = initUserSession(user.id, user.name, user.username);
+        const refreshToken = uuid();
 
-        const token = initUserSession(user.id, user.name, user.username);
-        res.cookie('stok', token, {httpOnly: true, maxAge: 1000*60*60*3, secure: false});
+        res.cookie('stok', accessToken, {httpOnly: true, maxAge: 1000*60*60*3, secure: false});
+        res.cookie('rtok', refreshToken, {httpOnly: true, maxAge: 1000*60*60*24*365*10, secure: false});
+        res.cookie('uuid', user.uuid, {httpOnly: true, maxAge: 1000*60*60*24*365*10, secure: false});
 
-        return res.json({ok: true, token, data: user});
+        await db('users_tokens').insert({
+            accessToken, refreshToken, uuid: user.uuid
+        });
+
+        return res.json({ok: true, accessToken, data: user});
     }
 }

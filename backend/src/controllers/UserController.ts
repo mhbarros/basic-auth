@@ -4,6 +4,7 @@ import {hashPassword} from '../helpers/crypt';
 import {v4 as generateUuid} from 'uuid';
 
 import db from '../db/db';
+import {initUserSession} from "../helpers/auth";
 
 export default class UserController{
     async get(req: Request, res: Response){
@@ -39,25 +40,30 @@ export default class UserController{
                 return res.status(400).json({ok: false, errors:[{message: 'Houve um erro ao criar usuário. Por favor, tente novamente'}]});
             }
 
-            let userId = newUser[0];
+            console.log('Id registrado: ', newUser[0]);
 
-            if(req.session){
-                req.session.currentUser = {
-                    id: userId,
-                    name,
-                    username,
-                    email
-                };
-            }else{
-                console.log('deu ruim brabo');
-            }
+            const accessToken  = initUserSession(newUser[0], name, username);
+            const refreshToken = generateUuid();
+
+            res.cookie('stok', accessToken, {httpOnly: true, maxAge: 1000*60*60*3, secure: false});
+            res.cookie('rtok', refreshToken, {httpOnly: true, maxAge: 1000*60*60*24*365*10, secure: false});
+            res.cookie('uuid', userUuid, {httpOnly: true, maxAge: 1000*60*60*24*365*10, secure: false});
+
+            await db('users_tokens').insert({
+                accessToken, refreshToken, uuid: userUuid
+            })
+
+            return res.json({ok: true, data: {
+                name,
+                username,
+                email,
+                uuid: userUuid
+            }});
 
         }catch (e){
             if(e.code === 'ER_DUP_ENTRY'){
                 return res.status(400).json({ok: false, errors: [{message: 'Usuário já cadastrado'}]});
             }
         }
-
-        return res.redirect('/dashboard');
     }
 }
