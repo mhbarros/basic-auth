@@ -50,24 +50,27 @@ const Dashboard = () => {
 
 Dashboard.getInitialProps = async (ctx) => {
 
+  let isAuth = false;
+
   if(!ctx.req || !ctx.req.headers.cookie){
-    if(ctx.res){
-      ctx.res.statusCode = 301;
-      ctx.res.setHeader('location', '/');
+    return {isAuth};
+  }
+
+  try{
+    const response = await Api.get('/login', {headers: {cookie: ctx.req.headers.cookie}});
+    if(response.headers && response.headers['set-cookie']){
+      isAuth = true;
+      ctx.res.setHeader('set-cookie', response.headers['set-cookie']);
+
     }
 
-    return {};
-  }
-
-  const cookie = ctx.req.headers.cookie;
-
-  const response = await Api.get('/login', {headers: {cookie}});
-
-  if(response.data.ok !== true){
+  }catch (e) {
+    isAuth = false;
     ctx.res.statusCode = 301;
-    ctx.res.setHeader('location', '/');
+    ctx.res.setHeader('location', '/dashboard');
   }
-  return {};
+
+  return {isAuth};
 }
 
 export default Dashboard;

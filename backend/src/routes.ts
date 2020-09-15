@@ -12,7 +12,7 @@ const routes          = express.Router();
 const userController  = new UserController();
 const loginController = new LoginController();
 
-routes.get('/login', loginController.getLogin)
+routes.get('/login', userAuth, (_, res: Response) => {res.json({ok: true});console.log('Tá chegando sim')});
 routes.get('/user', userAuth, userController.get);
 
 routes.post('/user', registerUserValidator, userController.create)

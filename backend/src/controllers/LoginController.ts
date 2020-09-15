@@ -18,20 +18,7 @@ interface User {
 }
 
 export default class LoginController{
-    async getLogin(req: Request, res: Response){
-        if(!req.cookies.stok){
-            return res.json({ok: false});
-        }
 
-        const token = req.cookies.stok;
-
-        const isValid = validateUserSession(token);
-        if(!isValid){
-            return res.json({ok: false});
-        }
-
-        return res.json({ok: true});
-    }
     async login(req: Request, res: Response){
 
         const validation = validationResult(req);

@@ -180,16 +180,22 @@ const Home = () =>  {
 
 Home.getInitialProps = async (ctx) => {
   let isAuth = false;
-  if(!ctx.req.headers.cookie){
+
+  if(!ctx.req || !ctx.req.headers.cookie){
     return {isAuth};
   }
 
-  const response = await Api.get('/login', {headers: {cookie: ctx.req.headers.cookie}});
-  if(response.data.ok === true){
+  try{
+    await Api.get('/login', {headers: {cookie: ctx.req.headers.cookie}});
+    isAuth = true;
     ctx.res.statusCode = 301;
     ctx.res.setHeader('location', '/dashboard');
-    isAuth = true;
+
+
+  }catch (e) {
+
   }
+
   return {isAuth};
 }
 
