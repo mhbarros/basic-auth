@@ -5,7 +5,7 @@ import {v4 as uuid} from 'uuid';
 import db from '../db/db';
 
 import {checkPassword} from '../helpers/crypt';
-import {initUserSession, validateUserSession} from '../helpers/auth';
+import {initUserSession, setAuthCookie} from '../helpers/auth';
 
 interface User {
     id: number,
@@ -46,15 +46,21 @@ export default class LoginController{
         delete user.password;
 
         const accessToken  = initUserSession(user.id, user.name, user.username);
+        if(typeof accessToken !== 'string'){
+            return res.status(400).json({ok: false, erros:[{message: 'Houve um erro ao iniciar sessão.'}]});
+        }
+
         const refreshToken = uuid();
 
-        res.cookie('stok', accessToken, {httpOnly: true, maxAge: 1000*60*60*3, secure: false});
-        res.cookie('rtok', refreshToken, {httpOnly: true, maxAge: 1000*60*60*24*365*10, secure: false});
-        res.cookie('uuid', user.uuid, {httpOnly: true, maxAge: 1000*60*60*24*365*10, secure: false});
+        setAuthCookie(res, accessToken, refreshToken, user.uuid);
 
-        await db('users_tokens').insert({
-            accessToken, refreshToken, uuid: user.uuid
-        });
+        try{
+            await db('users_tokens').insert({
+                accessToken, refreshToken, uuid: user.uuid
+            });
+        }catch (e){
+            return res.status(400).json({ok: false, errors: [{message: 'Não foi possível iniciar sessão. Por favor, tente novamente.'}]});
+        }
 
         return res.json({ok: true, accessToken, data: user});
     }
