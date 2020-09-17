@@ -64,4 +64,16 @@ export default class LoginController{
 
         return res.json({ok: true, accessToken, data: user});
     }
+
+    async logout(req: Request, res: Response){
+        const {rtok, uuid} = req.cookies;
+        res.clearCookie('stok');
+        res.clearCookie('rtok');
+        res.clearCookie('uuid');
+
+        const response = await db('users_tokens').del().where({uuid, refreshToken: rtok});
+        console.log(response);
+
+        res.json({ok: true});
+    }
 }

@@ -12,10 +12,11 @@ const routes          = express.Router();
 const userController  = new UserController();
 const loginController = new LoginController();
 
-routes.get('/login', userAuth, (_, res: Response) => {res.json({ok: true});console.log('Tá chegando sim')});
+routes.get('/login', userAuth, (_, res: Response) => {res.json({ok: true});});
 routes.get('/user', userAuth, userController.get);
 
 routes.post('/user', registerUserValidator, userController.create)
 routes.post('/login', userLoginValidator, loginController.login);
+routes.post('/logout', loginController.logout);
 
 export default routes;

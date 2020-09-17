@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import router from 'next/router';
 import {Api} from "../../services/Api";
 
 import styles from '../../css/dashboard.module.css';
@@ -11,16 +12,20 @@ const Dashboard = () => {
     setName(localStorage.getItem('user.name'));
   });
 
-  const teste = async () => {
-    const response = await Api.get('/user');
-  }
+  const doLogout = async () => {
+    const response = await Api.post('/logout');
+    if(response.data.ok){
+      await router.push('/');
+    }
+
+  };
 
   return (
       <div className={styles.mainContainer}>
         <div>
           <div className={styles.topInfo}>
             <h1>Olá, {name}</h1>
-            <a href={'#'}>Sair</a>
+            <a href={'#'} onClick={doLogout}>Sair</a>
           </div>
           <div>
             <label>Nome</label>
@@ -42,7 +47,7 @@ const Dashboard = () => {
               <option value={'F'}>Feminino</option>
             </select>
           </div>
-          <button className={'primary'} onClick={teste}>Salvar</button>
+          <button className={'primary'} >Salvar</button>
         </div>
       </div>
   )
@@ -53,6 +58,11 @@ Dashboard.getInitialProps = async (ctx) => {
   let isAuth = false;
 
   if(!ctx.req || !ctx.req.headers.cookie){
+    if(ctx.res){
+      ctx.res.statusCode = 301;
+      ctx.res.setHeader('location', '/');
+    }
+
     return {isAuth};
   }
 
@@ -65,9 +75,10 @@ Dashboard.getInitialProps = async (ctx) => {
     }
 
   }catch (e) {
+
     isAuth = false;
     ctx.res.statusCode = 301;
-    ctx.res.setHeader('location', '/dashboard');
+    ctx.res.setHeader('location', '/');
   }
 
   return {isAuth};
