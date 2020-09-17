@@ -71,9 +71,12 @@ export default class LoginController{
         res.clearCookie('rtok');
         res.clearCookie('uuid');
 
-        const response = await db('users_tokens').del().where({uuid, refreshToken: rtok});
-        console.log(response);
+        const removeToken = await db('users_tokens').del().where({uuid, refreshToken: rtok});
+        if(removeToken === 1){
+            return res.json({ok: true});
+        }
 
-        res.json({ok: true});
+        return res.json({ok: false});
+
     }
 }
