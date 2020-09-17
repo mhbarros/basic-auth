@@ -6,11 +6,28 @@ import styles from '../../css/dashboard.module.css';
 
 const Dashboard = () => {
 
-  const [name, setName] = useState('');
+  const [name, setName]         = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail]       = useState('');
+  const [gender, setGender]     = useState('');
 
   useEffect(() => {
-    setName(localStorage.getItem('user.name'));
+    getUserInfo();
   });
+
+  const getUserInfo = async () => {
+    const {data} = await Api.get('/user');
+
+    if(data.ok === true){
+      setName(data.data.name);
+      setUsername(data.data.username);
+      setEmail(data.data.email);
+
+      let gender = data.data.gender;
+      if(!gender) gender = '';
+      setGender(gender);
+    }
+  }
 
   const doLogout = async () => {
     const response = await Api.post('/logout');
@@ -29,19 +46,19 @@ const Dashboard = () => {
           </div>
           <div>
             <label>Nome</label>
-            <input type={'text'} className={'primary'} />
+            <input type={'text'} className={'primary'} value={name} />
           </div>
           <div>
             <label>Usuário</label>
-            <input type={'text'} className={'primary'} />
+            <input type={'text'} className={'primary'} value={username} />
           </div>
           <div>
             <label>E-mail</label>
-            <input type={'text'} className={'primary'} />
+            <input type={'text'} className={'primary'} value={email} />
           </div>
           <div>
             <label>Sexo</label>
-            <select>
+            <select value={gender}>
               <option value={''} />
               <option value={'M'}>Masculino</option>
               <option value={'F'}>Feminino</option>
