@@ -2,23 +2,12 @@ import {Request, Response, NextFunction} from 'express';
 
 import {initUserSession, validateUserSession, setAuthCookie} from '../helpers/auth';
 
+import UserInterface from '../interfaces/User';
+import UserTokenInterface from '../interfaces/UserToken';
+
 import db from '../db/db';
 
-interface UserToken {
-    accessToken: string,
-    refreshToken: string,
-    uuid: string
-}
 
-interface User {
-    id: number,
-    name: string,
-    username: string,
-    password?: string,
-    email: string,
-    gender: string,
-    uuid: string
-}
 
 export default async (req: Request, res: Response, next: NextFunction) => {
     const accessToken  = req.cookies.stok;
@@ -34,7 +23,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     const isValid = validateUserSession(accessToken);
 
     if(!isValid){
-        const checkUserToken = await db<UserToken>('users_tokens').select().where({refreshToken, uuid});
+        const checkUserToken = await db<UserTokenInterface>('users_tokens').select().where({refreshToken, uuid});
         if(!checkUserToken[0]){
             res.statusCode = 401;
             res.end();
@@ -42,7 +31,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
         }
 
 
-        const currentUser = await db<User>('users').select().where({uuid});
+        const currentUser = await db<UserInterface>('users').select().where({uuid});
         if(!currentUser){
             res.statusCode = 401;
             res.end();

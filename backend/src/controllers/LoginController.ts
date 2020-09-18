@@ -2,20 +2,14 @@ import {Request, Response} from "express";
 import {validationResult} from 'express-validator';
 import {v4 as uuid} from 'uuid';
 
+import UserInterface from '../interfaces/User';
+
 import db from '../db/db';
 
 import {checkPassword} from '../helpers/crypt';
 import {initUserSession, setAuthCookie} from '../helpers/auth';
 
-interface User {
-    id: number,
-    name: string,
-    username: string,
-    password?: string,
-    email: string,
-    gender: string,
-    uuid: string
-}
+
 
 export default class LoginController{
 
@@ -28,7 +22,7 @@ export default class LoginController{
 
         let {email, password} = req.body;
 
-        let data = await db<User>('users').select().where({email});
+        let data = await db<UserInterface>('users').select().where({email});
 
         if(!data || data.length !== 1){
             return res.status(400).json({ok: false, errors: [{message: 'Usuário não encontrado'}]});

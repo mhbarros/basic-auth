@@ -3,26 +3,13 @@ import {validationResult} from 'express-validator';
 import {hashPassword} from '../helpers/crypt';
 import {v4 as generateUuid} from 'uuid';
 
+import UserInterface from '../interfaces/User';
+import JWTInterface from '../interfaces/JWT';
+
 import jwt from 'jsonwebtoken';
 
 import db from '../db/db';
 import {initUserSession} from "../helpers/auth";
-
-interface JWT {
-    user: User,
-    iat: number,
-    exp: number
-}
-
-interface User {
-    id: number,
-    name: string,
-    username: string,
-    password?: string,
-    email?: string,
-    gender?: string,
-    uuid?: string
-}
 
 export default class UserController{
     async get(req: Request, res: Response){
@@ -31,14 +18,14 @@ export default class UserController{
             return res.status(401).json({ok: false});
         }
 
-        let currentUser = jwt.decode(stok) as JWT;
+        let currentUser = jwt.decode(stok) as JWTInterface;
         if(!currentUser){
             return res.status(401).json({ok: false});
         }
 
         let user = currentUser.user;
 
-        let response = await db<User>('users').select('id', 'name', 'username', 'email', 'gender').where({id: user.id, uuid});
+        let response = await db<UserInterface>('users').select('id', 'name', 'username', 'email', 'gender').where({id: user.id, uuid});
         if(response.length === 0){
             return res.status(401).json({ok: false});
         }
