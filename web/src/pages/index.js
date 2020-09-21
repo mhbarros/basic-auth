@@ -29,9 +29,10 @@ export async function getInitialProps(ctx){
 
 const Home = () =>  {
 
-  const loginBox    = useRef();
-  const registerBox = useRef();
-  const title       = useRef();
+  const loginBox          = useRef();
+  const registerBox       = useRef();
+  const forgotPasswordBox = useRef();
+  const title             = useRef();
 
   const [registerName, setRegisterName]                       = useState('');
   const [registerUsername, setRegisterUsername]               = useState('');
@@ -43,15 +44,36 @@ const Home = () =>  {
   const [loginPassword, setLoginPassword] = useState('');
 
   const showLogin = () => {
-    registerBox.current.style.display = 'none';
     loginBox.current.style.display    = 'flex';
     title.current.innerText           = 'Olá novamente';
+    hideRegister();
+    hideForgotPassword();
+  }
+
+  const hideLogin = () => {
+    loginBox.current.style.display    = 'none';
   }
 
   const showRegister = () => {
     registerBox.current.style.display = 'flex';
-    loginBox.current.style.display    = 'none';
     title.current.innerText           = 'Crie sua conta';
+    hideLogin();
+    hideForgotPassword();
+  }
+
+  const hideRegister = () => {
+    registerBox.current.style.display = 'none';
+  }
+
+  const showForgotPassword = () => {
+    forgotPasswordBox.current.style.display = 'flex';
+    title.current.innerText = 'Recupere sua conta';
+    hideLogin();
+    hideRegister();
+  }
+
+  const hideForgotPassword = () => {
+    forgotPasswordBox.current.style.display = 'none';
   }
 
   const validateRegister = () => {
@@ -139,7 +161,7 @@ const Home = () =>  {
               <label>Senha</label>
               <input className={'primary'} type={'password'} placeholder={'Senha'} value={loginPassword} onChange={e => {setLoginPassword(e.target.value)}}/>
             </div>
-            <a href={'#'}>Esqueceu sua senha?</a>
+            <a href={'#'} onClick={showForgotPassword}>Esqueceu sua senha?</a>
             <button className={'primary'} onClick={doLogin}>Entrar</button>
             <hr/>
             <span>Não possui uma conta? <a href={'#'} onClick={showRegister}>Cadastre-se</a></span>
@@ -171,6 +193,14 @@ const Home = () =>  {
             <button className={'primary'} onClick={doRegister}>Cadastrar</button>
             <hr/>
             <span>Já possui conta? <a href={'#'} onClick={showLogin}>Entrar</a></span>
+          </section>
+          <section className={styles.forgotPasswordBox} ref={forgotPasswordBox}>
+            <div>
+              <label>E-mail</label>
+              <input className={'primary'} type={'email'} placeholder={'E-mail'} />
+            </div>
+            <button className={'primary'}>Enviar recuperação</button>
+            <a href={'#'} onClick={showLogin}>Voltar</a>
           </section>
         </div>
         <div className={styles.mainBg}/>

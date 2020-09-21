@@ -50,11 +50,11 @@
     margin-bottom: 5px;
 }
 
-.loginBox button, .registerBox button{
+.loginBox button, .registerBox button, .forgotPasswordBox button{
     margin-top: 20px;
 }
 
-.registerBox {
+.registerBox, .forgotPasswordBox {
     margin-top: 50px;
     display: none;
     flex-direction: column;
@@ -62,6 +62,6 @@
     line-height: 2;
 }
 
-.registerBox > div {
+.registerBox > div, .forgotPasswordBox > div {
     margin-bottom: 5px;
 }
