@@ -43,6 +43,8 @@ const Home = () =>  {
   const [loginEmail, setLoginEmail]       = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+
   const showLogin = () => {
     loginBox.current.style.display    = 'flex';
     title.current.innerText           = 'Olá novamente';
@@ -147,6 +149,14 @@ const Home = () =>  {
     }
   }
 
+  const doForgotPassword = async () => {
+    const data = {
+      email: forgotPasswordEmail
+    }
+    const response = await Api.post('/login/forgot', data);
+    console.log(response.data);
+  }
+
   return (
       <div className={styles.mainContainer}>
         <Head title={'Bem vindo(a)'} />
@@ -197,9 +207,9 @@ const Home = () =>  {
           <section className={styles.forgotPasswordBox} ref={forgotPasswordBox}>
             <div>
               <label>E-mail</label>
-              <input className={'primary'} type={'email'} placeholder={'E-mail'} />
+              <input className={'primary'} type={'email'} placeholder={'E-mail'} value={forgotPasswordEmail} onChange={e => setForgotPasswordEmail(e.target.value)}/>
             </div>
-            <button className={'primary'}>Enviar recuperação</button>
+            <button className={'primary'} onClick={doForgotPassword}>Enviar recuperação</button>
             <a href={'#'} onClick={showLogin}>Voltar</a>
           </section>
         </div>

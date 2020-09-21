@@ -8,6 +8,7 @@ import db from '../db/db';
 
 import {checkPassword} from '../helpers/crypt';
 import {initUserSession, setAuthCookie} from '../helpers/auth';
+import {sendForgotPasswordMail} from '../helpers/mail';
 
 
 
@@ -72,5 +73,15 @@ export default class LoginController{
 
         return res.json({ok: false});
 
+    }
+
+    async forgotPassword(req: Request, res: Response){
+        const validation = validationResult(req.body);
+        if(!validation.isEmpty()) return res.status(400).json({ok: false, errors: validation.array()});
+
+        const {email} = req.body;
+        const response = await sendForgotPasswordMail(email);
+        console.log(response);
+        res.json({ok: true});
     }
 }
