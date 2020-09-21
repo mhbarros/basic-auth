@@ -90,4 +90,16 @@ export default class UserController{
             }
         }
     }
+
+    async update(req: Request, res: Response){
+        const validation = validationResult(req);
+        if(!validation.isEmpty()){
+            return res.status(400).json({ok: false, errors: validation.array()});
+        }
+        const {uuid} = req.cookies;
+        const {name, username, email, gender} = req.body;
+
+        await db('users').update({name, username, email, gender}).where({uuid})
+        res.json({ok: true});
+    }
 }

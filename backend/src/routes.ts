@@ -1,6 +1,6 @@
-import express, {NextFunction, Request, Response} from 'express';
+import express, {Response} from 'express';
 
-import {registerUserValidator} from './validators/user';
+import {registerUserValidator, updateUserValidator} from './validators/user';
 import {userLoginValidator} from './validators/login';
 
 import UserController from './controllers/UserController';
@@ -15,7 +15,8 @@ const loginController = new LoginController();
 routes.get('/login', userAuth, (_, res: Response) => {res.json({ok: true});});
 routes.get('/user', userAuth, userController.get);
 
-routes.post('/user', registerUserValidator, userController.create)
+routes.post('/user', registerUserValidator, userController.create);
+routes.patch('/user', updateUserValidator, userController.update)
 routes.post('/login', userLoginValidator, loginController.login);
 routes.post('/logout', loginController.logout);
 
