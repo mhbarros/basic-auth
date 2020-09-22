@@ -81,7 +81,9 @@ export default class LoginController{
 
         const {email} = req.body;
         const response = await sendForgotPasswordMail(email);
-        console.log(response);
+        if(!response){
+            return res.status(400).json({ok: false});
+        }
         res.json({ok: true});
     }
 }

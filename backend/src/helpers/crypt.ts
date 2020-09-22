@@ -9,7 +9,3 @@ export async function hashPassword(password: string){
 export async function checkPassword(password: string, hash: string){
     return await bcrypt.compare(password + passCrypt, hash);
 }
-
-export function cryptEmail(){
-
-}

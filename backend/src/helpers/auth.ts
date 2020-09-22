@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import {Response} from "express";
 
+import {v4 as uuid} from 'uuid';
+
+import db from '../db/db';
+
 const jwtExpireTime = 60 * 5;
 const jwtExpireTimeInMiliseconds = jwtExpireTime * 1000;
 
@@ -46,4 +50,26 @@ export function setAuthCookie(res: Response, accessToken: string, refreshToken?:
         res.cookie('uuid', uuid, {httpOnly: true, maxAge: 1000*60*60*24*365*10, secure: false});
     }
 
+}
+
+export async function generateForgotPasswordLink(mail: string): Promise<string|boolean>{
+    const key = uuid();
+    let date = new Date();
+
+    date.setMinutes(date.getMinutes() + 30);
+    const dateString = date.toISOString();
+    // date.toISOString().replace('T', ' ').slice(mystring.indexOf('.'), -1)
+
+
+    const validUntil = dateString.replace('T', ' ').slice(0, dateString.indexOf('.'));
+
+    const response = await db('users_recover').insert({
+        email: mail,
+        uuid: key,
+        valid_until: validUntil
+    });
+
+    if(!response) return false;
+
+    return `http://localhost:3333/recover/${key}`;
 }

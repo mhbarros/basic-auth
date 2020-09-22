@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 
 import {v4 as uuid} from 'uuid';
+import {generateForgotPasswordLink} from "./auth";
 
 const config = {
     host: process.env.SMTP_HOST,
@@ -30,11 +31,11 @@ export const sendMail = async (to: string, subject: string, text: string) => {
     })
 }
 
-export const sendForgotPasswordMail = async (to: string) => {
-    const recoverKey = uuid();
-    const recoverURL = `http://localhost:3333/recover/${recoverKey}`;
+export async function sendForgotPasswordMail(to: string):Promise<string | boolean>{
+    const recoverURL = await generateForgotPasswordLink(to);
+    if(!recoverURL) return false;
+
     const text = `Para recuperar seu acesso, clique no link abaixo:<br/>${recoverURL}`;
 
-    await sendMail(to, 'Recuperação de senha', text);
-
+    return await sendMail(to, 'Recuperação de senha', text);
 }
