@@ -58,8 +58,6 @@ export async function generateForgotPasswordLink(mail: string): Promise<string|b
 
     date.setMinutes(date.getMinutes() + 30);
     const dateString = date.toISOString();
-    // date.toISOString().replace('T', ' ').slice(mystring.indexOf('.'), -1)
-
 
     const validUntil = dateString.replace('T', ' ').slice(0, dateString.indexOf('.'));
 

@@ -8,3 +8,7 @@ export const userLoginValidator = [
 export const userForgotPasswordValidator = [
     body('email').notEmpty().isString().isEmail().isLength({max: 80}),
 ]
+
+export const getRecoverByUuid = [
+    body('uuid').notEmpty().isString()
+]

@@ -86,4 +86,22 @@ export default class LoginController{
         }
         res.json({ok: true});
     }
+
+    async getRecoverByUuid(req: Request, res: Response){
+        const validation = validationResult(req.params);
+        if(!validation.isEmpty()) return res.status(400).json({ok: false, errors: validation.array()});
+
+        const {uuid} = req.params;
+
+        const registeredUuid = await db('users_recover').select().where({uuid});
+        if(!registeredUuid || registeredUuid.length !== 1){
+            return res.status(400).json({ok: false, errors: [{msg: 'Não foi encontrado pedido para recuperação de senha'}]});
+        }
+
+        //todo: verificação de validade
+
+        const recoverRequest = registeredUuid[0];
+        console.log(recoverRequest);
+        res.json({ok: true});
+    }
 }
