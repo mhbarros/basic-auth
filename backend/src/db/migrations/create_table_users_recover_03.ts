@@ -6,6 +6,7 @@ export const up = (knex: Knex) => {
         table.string('uuid', 36).notNullable();
         table.dateTime('created_at', {useTz: true}).defaultTo(knex.fn.now());
         table.dateTime('valid_until', {useTz: true}).notNullable();
+        table.boolean('status').defaultTo(1).notNullable();
 
     })
 }

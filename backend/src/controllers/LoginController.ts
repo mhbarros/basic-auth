@@ -101,7 +101,9 @@ export default class LoginController{
         //todo: verificação de validade
 
         const recoverRequest = registeredUuid[0];
-        console.log(recoverRequest);
+        if(recoverRequest.status == 0){
+            return res.status(400).json({ok: false, errors: [{msg: 'Essa alteração de senha já foi realizada anteriormente.'}]});
+        }
         res.json({ok: true});
     }
 
@@ -125,11 +127,21 @@ export default class LoginController{
             return res.status(400).json({ok: false, errors: [{msg: 'Houve um erro ao alterar a senha. Por favor, tente novamente.'}]});
         }
 
-        const updateResponse = await db('users').update({password: newPassword}).where({email});
-        if(!updateResponse){
+        const trx = await db.transaction();
+
+        const updatePassword = await db('users').update({password: newPassword}).where({email});
+        if(!updatePassword){
+            await trx.rollback();
             return res.status(400).json({ok: false, errors: [{msg: 'Houve um erro na atualização da senha. Por favor, tente novamente'}]});
         }
 
+        const updateStatus = await db('users_recover').update({status: 0}).where({uuid});
+        if(!updateStatus){
+            await trx.rollback();
+            return res.status(400).json({ok: false, errors: [{msg: 'Houve um erro na atualização da senha. Por favor, tente novamente'}]});
+        }
+
+        await trx.commit();
         res.json({ok: true});
     }
 }

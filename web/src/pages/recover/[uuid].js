@@ -8,11 +8,11 @@ const RecoverUuid = ({ok}) => {
 
   const router = useRouter();
 
-  const [newPass, setNewPass]               = useState('');
+  const [newPass, setNewPass] = useState('');
   const [newPassConfirm, setNewPassConfirm] = useState('');
 
   const validateNewPassword = () => {
-    if(!newPass || !newPassConfirm){
+    if (!newPass || !newPassConfirm) {
       return false;
     }
 
@@ -20,7 +20,7 @@ const RecoverUuid = ({ok}) => {
   }
 
   const doChangePass = async () => {
-    if(!validateNewPassword()){
+    if (!validateNewPassword()) {
       console.error('Erro ao alterar senha. Por favor, tente novamente.');
       return;
     }
@@ -30,14 +30,14 @@ const RecoverUuid = ({ok}) => {
       passConfirm: newPassConfirm
     }
 
-    try{
+    try {
       const response = await Api.post('/recover', recoverData);
       const {ok} = response.data;
-      if(ok === true){
+      if (ok === true) {
         alert('Senha alterada com sucesso');
         await router.push('/');
       }
-    }catch (e){
+    } catch (e) {
       console.error(e);
     }
   }
@@ -49,12 +49,16 @@ const RecoverUuid = ({ok}) => {
           <div>
             <label>Nova senha</label>
             <input type={'password'} className={'primary'} placeholder={'Nova senha'}
-                   value={newPass} onChange={e => {setNewPass(e.target.value)}}/>
+                   value={newPass} onChange={e => {
+              setNewPass(e.target.value)
+            }}/>
           </div>
           <div>
             <label>Confirme a nova senha</label>
             <input type={'password'} className={'primary'} placeholder={'Confirme a nova senha'}
-                   value={newPassConfirm} onChange={e => {setNewPassConfirm(e.target.value)}}/>
+                   value={newPassConfirm} onChange={e => {
+              setNewPassConfirm(e.target.value)
+            }}/>
           </div>
           <button className={'primary'} onClick={doChangePass}>Alterar</button>
         </div>
@@ -62,9 +66,10 @@ const RecoverUuid = ({ok}) => {
 
   )
 
-  const invalidView = () => (
-    <h1>Este pedido não é mais válido.</h1>
-  )
+  const invalidView = async () => {
+
+    return <h1>Este pedido não é mais válido.</h1>;
+  }
 
   if(ok === true) {
     return recoverView()
