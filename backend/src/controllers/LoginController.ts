@@ -6,7 +6,7 @@ import UserInterface from '../interfaces/User';
 
 import db from '../db/db';
 
-import {checkPassword} from '../helpers/crypt';
+import {checkPassword, hashPassword} from '../helpers/crypt';
 import {initUserSession, setAuthCookie} from '../helpers/auth';
 import {sendForgotPasswordMail} from '../helpers/mail';
 
@@ -102,6 +102,34 @@ export default class LoginController{
 
         const recoverRequest = registeredUuid[0];
         console.log(recoverRequest);
+        res.json({ok: true});
+    }
+
+    async recoverPassword(req: Request, res: Response){
+
+        const {uuid, pass, passConfirm} = req.body;
+
+        if(pass !== passConfirm){
+            return res.status(400).json({ok: false, errors: [{msg: 'As senhas não conferem'}]});
+        }
+
+        const uuidRecover = await db('users_recover').select().where({uuid});
+        if(!uuidRecover || uuidRecover.length !== 1){
+            return res.status(400).json({ok: false, errors:[{msg: 'Houve um erro ao processar solicitação. Por favor, tente novamente'}]});
+        }
+
+        const {email} = uuidRecover[0];
+
+        const newPassword = await hashPassword(pass);
+        if(!newPassword){
+            return res.status(400).json({ok: false, errors: [{msg: 'Houve um erro ao alterar a senha. Por favor, tente novamente.'}]});
+        }
+
+        const updateResponse = await db('users').update({password: newPassword}).where({email});
+        if(!updateResponse){
+            return res.status(400).json({ok: false, errors: [{msg: 'Houve um erro na atualização da senha. Por favor, tente novamente'}]});
+        }
+
         res.json({ok: true});
     }
 }

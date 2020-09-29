@@ -69,5 +69,5 @@ export async function generateForgotPasswordLink(mail: string): Promise<string|b
 
     if(!response) return false;
 
-    return `http://localhost:3333/recover/${key}`;
+    return `http://localhost:3000/recover/${key}`;
 }

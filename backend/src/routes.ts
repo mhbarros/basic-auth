@@ -20,6 +20,7 @@ routes.post('/user', registerUserValidator, userController.create);
 routes.post('/login', userLoginValidator, loginController.login);
 routes.post('/login/forgot', userForgotPasswordValidator, loginController.forgotPassword);
 routes.post('/logout', loginController.logout);
+routes.post('/recover', loginController.recoverPassword);
 
 routes.patch('/user', updateUserValidator, userController.update)
 
